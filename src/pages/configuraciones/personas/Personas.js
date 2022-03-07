@@ -110,7 +110,6 @@ const Personas = () => {
                                 name="telefono"
                                 autocomplete="off"
                                 value={telefono || ""}
-                                autocomplete="off"
                                 onChange={handleInputChange} 
                             />
                         </div>

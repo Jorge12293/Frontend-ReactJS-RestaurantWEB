@@ -115,8 +115,9 @@ const Mesas = () => {
                                 className="form-control" 
                                 id="nombre"
                                 name="nombre"
+                                autocomplete="off" 
                                 value={nombre || ""}
-                                onChange={handleInputChange} 
+                                onChange={handleInputChange}
                             />
                         </div>
                         <button type="submit" className="btn btn-primary">Guardar</button>
