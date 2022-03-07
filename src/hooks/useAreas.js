@@ -14,7 +14,6 @@ export const useAreas =() =>{
                 setAreasData({});
             }
         });
-
         return ()=>{
             console.log("USE EFECT areas limpiando");
             setAreasData({});

@@ -1,71 +1,22 @@
-import React,{useState,useEffect} from "react";
-import {useNavigate,useParams,Link} from "react-router-dom";
+import React from "react";
 import './Personas.css';
-import {toast} from "react-toastify";
-import fireDb from "../../../firebase";
 import { usePersonas } from "../../../hooks/usePersonas";
 
-const initialState ={
-    nombre:"",
-    apellido:"",
-    telefono:"",
-    correo:"",
-}
 
 const Personas = () => {
     
 
     const {
         dataPersonas,
-        onDeletePersona} = usePersonas();
+        dataPersonaSelect,
+        onSelectPersona,
+        onDeletePersona,
+        limpiarPersonaSelect,
+        handleSubmitPersona,
+        handleInputChangePersona} = usePersonas();
 
-    const [state,setState] = useState(initialState);
-    const {nombre,apellido,telefono,correo} = state;
+    const {nombre,apellido,telefono,correo} = dataPersonaSelect;
     
-    
-    const limpiarFormPersona=()=>{
-        setState({
-            nombre:'',
-            apellido:'',
-            telefono:'',
-            correo:''
-        });
-    }
-
-    const handleInputChange =(e)=>{
-        const {name,value} = e.target;
-        setState({...state,[name]:value})
-    };
-
-
-    const handleSubmit =(e)=>{
-        e.preventDefault();
-        if(!nombre ){
-            toast.error("Proporcione un valor en cada campo de entrada");
-        }else{
-            fireDb.child('personas').push(state,(error)=>{
-                if(error){
-                    toast.error(error);
-                }else{
-                    toast.success("PERSONA GUARDADA");
-                }
-            })
-        }
-    };
-
-    
-    const onDelete=(id)=>{
-        if(window.confirm("Seguro de Eliminar Producto?")){
-            fireDb.child(`productos/${id}`).remove((err)=>{
-                if(err){
-                    toast.error(err);
-                }else{
-                    toast.error("PRODUCTO ELIMINADO")
-                }
-            });
-        }
-    }
-
 
     return (
         <div className="container">
@@ -75,7 +26,7 @@ const Personas = () => {
                 </div>
                 <div className="col-4">
                     <form
-                        onSubmit={handleSubmit}
+                        onSubmit={handleSubmitPersona}
                     >  
                         <div className="mb-3">
                             <label htmlFor="nombre" className="form-label">NOMBRE</label>
@@ -86,7 +37,7 @@ const Personas = () => {
                                 name="nombre"
                                 autocomplete="off"
                                 value={nombre || ""}
-                                onChange={handleInputChange} 
+                                onChange={handleInputChangePersona} 
                             />
                         </div>
                         <div className="mb-3">
@@ -98,7 +49,7 @@ const Personas = () => {
                                 name="apellido"
                                 autocomplete="off"
                                 value={apellido || ""}
-                                onChange={handleInputChange} 
+                                onChange={handleInputChangePersona} 
                             />
                         </div>
                         <div className="mb-3">
@@ -110,7 +61,7 @@ const Personas = () => {
                                 name="telefono"
                                 autocomplete="off"
                                 value={telefono || ""}
-                                onChange={handleInputChange} 
+                                onChange={handleInputChangePersona} 
                             />
                         </div>
                         <div className="mb-3">
@@ -122,7 +73,7 @@ const Personas = () => {
                                 name="correo"
                                 autocomplete="off"
                                 value={correo || ""}
-                                onChange={handleInputChange} 
+                                onChange={handleInputChangePersona} 
                             />
                         </div>
                         <button 
@@ -133,7 +84,7 @@ const Personas = () => {
                         <button 
                             type="button" 
                             className="btn btn-success"
-                            onClick={()=> limpiarFormPersona()}>
+                            onClick={()=> limpiarPersonaSelect()}>
                                 Limpiar
                         </button>
                    </form>
@@ -162,13 +113,18 @@ const Personas = () => {
                                         <td> {dataPersonas[id].telefono} </td>
                                         <td> {dataPersonas[id].correo} </td>
                                         <td className="tdAccion">
-                                            <Link to={'/pos'}>
-                                                <button type="button" className="btn btn-secondary">
-                                                    <span className="fas fa-edit"></span>
-                                                </button>
-                                            </Link>
-                                            {/*Eliminar Producto*/}
-                                            <button className="btn btn-danger" onClick={()=> onDeletePersona(id)}><span className="fas fa-trash"></span></button>
+
+                                            <button type="button" 
+                                                    className="btn btn-secondary"
+                                                    onClick={()=> onSelectPersona(id)}>
+                                                        <span className="fas fa-edit"></span>
+                                            </button>
+
+                                            <button type="button" 
+                                                    className="btn btn-danger" 
+                                                    onClick={()=> onDeletePersona(id)}>
+                                                        <span className="fas fa-trash"></span>
+                                            </button>
                                         </td>
                                     </tr>
                                 )
