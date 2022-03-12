@@ -32,12 +32,12 @@ export const usePersonas = () =>{
     }, [])
 
 
-    const handleInputChangePersona =(e)=>{
+    const inputChangePersona =(e)=>{
         const {name,value} = e.target;
         setPersonaSelect({...dataPersonaSelect,[name]:value})
     };
 
-    const handleSubmitPersona =(e)=>{
+    const submitPersona =(e)=>{
     
         console.log(dataPersonaSelect.idPersona);
         e.preventDefault();
@@ -132,8 +132,8 @@ export const usePersonas = () =>{
         onSelectPersona,
         onDeletePersona,
         limpiarPersonaSelect,
-        handleSubmitPersona,
-        handleInputChangePersona,
+        submitPersona,
+        inputChangePersona,
         nombrePersona
     }
 

@@ -32,15 +32,15 @@ const CardOrdersComponent = ({
                 <p>Mesa: {dataOrdenes[id].nombreMesa}</p>
                 <p>TOTAL: {dataOrdenes[id].total}</p>
                 <p>{dataOrdenes[id].estado}</p>
-                                
+
                 <button 
                     type="button" 
-                    className="btn btn-light"
+                    className="btn btn-light mt-2"
                     style={{color:"black"}}
                     data-toggle='modal' 
                     data-target="#modalDetalleOrden"
                     onClick={()=> buscarOrdenR(id)}>    
-                    VER ORDEN 
+                    VER 
                 </button>
         
             </div>

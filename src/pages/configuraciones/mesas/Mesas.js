@@ -55,13 +55,17 @@ const Mesas = () => {
         if(!nombre ){
             toast.error("Proporcione un valor en cada campo de entrada");
         }else{
-            fireDb.child('mesas').push(state,(error)=>{
-                if(error){
-                    toast.error(error);
-                }else{
-                    toast.success("MESA GUARDADA");
-                }
-            })
+            if(idArea=='0' || idArea==''){
+                toast.error("Seleccione una area");
+            }else{
+                fireDb.child('mesas').push(state,(error)=>{
+                    if(error){
+                        toast.error(error);
+                    }else{
+                        toast.success("MESA GUARDADA");
+                    }
+                })
+            }
         }
     };
 
@@ -98,7 +102,8 @@ const Mesas = () => {
                                     value={idArea || ""}
                                     onChange={handleInputChange}
                                     >
-                                    <option key={0}>Seleccione una Opción</option>  
+                                    <option key={0} value={'0'}>Seleccione una Opción</option>
+
                                     {Object.keys(areasData).map((id,index)=>{
                                         return (
                                            <option  key={id} value={`${id}`} >{areasData[id].nombre}</option>
@@ -115,7 +120,7 @@ const Mesas = () => {
                                 className="form-control" 
                                 id="nombre"
                                 name="nombre"
-                                autocomplete="off" 
+                                autoComplete="off" 
                                 value={nombre || ""}
                                 onChange={handleInputChange}
                             />

@@ -2,20 +2,18 @@ import React from "react";
 import './Personas.css';
 import { usePersonas } from "../../../hooks/usePersonas";
 
-
 const Personas = () => {
     
-
     const {
         dataPersonas,
         dataPersonaSelect,
         onSelectPersona,
         onDeletePersona,
         limpiarPersonaSelect,
-        handleSubmitPersona,
-        handleInputChangePersona} = usePersonas();
+        submitPersona,
+        inputChangePersona} = usePersonas();
 
-    const {nombre,apellido,telefono,correo} = dataPersonaSelect;
+    const {idPersona,nombre,apellido,telefono,correo} = dataPersonaSelect;
     
 
     return (
@@ -26,7 +24,7 @@ const Personas = () => {
                 </div>
                 <div className="col-4">
                     <form
-                        onSubmit={handleSubmitPersona}
+                        onSubmit={submitPersona}
                     >  
                         <div className="mb-3">
                             <label htmlFor="nombre" className="form-label">NOMBRE</label>
@@ -35,9 +33,9 @@ const Personas = () => {
                                 className="form-control" 
                                 id="nombre"
                                 name="nombre"
-                                autocomplete="off"
+                                autoComplete="off"
                                 value={nombre || ""}
-                                onChange={handleInputChangePersona} 
+                                onChange={inputChangePersona} 
                             />
                         </div>
                         <div className="mb-3">
@@ -47,9 +45,9 @@ const Personas = () => {
                                 className="form-control" 
                                 id="apellido"
                                 name="apellido"
-                                autocomplete="off"
+                                autoComplete="off"
                                 value={apellido || ""}
-                                onChange={handleInputChangePersona} 
+                                onChange={inputChangePersona} 
                             />
                         </div>
                         <div className="mb-3">
@@ -59,9 +57,9 @@ const Personas = () => {
                                 className="form-control" 
                                 id="telefono"
                                 name="telefono"
-                                autocomplete="off"
+                                autoComplete="off"
                                 value={telefono || ""}
-                                onChange={handleInputChangePersona} 
+                                onChange={inputChangePersona} 
                             />
                         </div>
                         <div className="mb-3">
@@ -71,16 +69,17 @@ const Personas = () => {
                                 className="form-control" 
                                 id="correo"
                                 name="correo"
-                                autocomplete="off"
+                                autoComplete="off"
                                 value={correo || ""}
-                                onChange={handleInputChangePersona} 
+                                onChange={inputChangePersona} 
                             />
                         </div>
                         <button 
                             type="submit" 
                             className="btn btn-primary">
-                                Guardar
+                            {idPersona?'Actualizar':'Guardar'}
                         </button>
+                        
                         <button 
                             type="button" 
                             className="btn btn-success"

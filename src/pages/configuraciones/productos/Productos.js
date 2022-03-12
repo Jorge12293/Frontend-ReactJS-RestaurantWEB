@@ -116,7 +116,7 @@ const Productos = () => {
                                 className="form-control" 
                                 id="nombre"
                                 name="nombre"
-                                autocomplete="off"
+                                autoComplete="off"
                                 value={nombre || ""}
                                 onChange={handleInputChange} 
                             />
