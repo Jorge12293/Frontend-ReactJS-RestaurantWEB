@@ -1,86 +1,21 @@
-import React,{useState,useEffect} from "react";
-import {useNavigate,useParams,Link} from "react-router-dom";
+import React from "react";
 import './Mesas.css';
-import {toast} from "react-toastify";
-import fireDb from "../../../firebase";
+import { useAreas } from "../../../hooks/useAreas";
+import { useMesas } from "../../../hooks/useMesas";
 
-const initialState ={
-    idArea:"",
-    nombre:0,
-    estado:"libre",
-    idOrden:""
-}
 
 const Mesas = () => {
-    
-    const [state,setState] = useState(initialState);
-    const [data,setData] = useState({});
-    const [areasData,setAreasData] = useState({});
-    const {nombre,idArea,estado} = state;
 
-    useEffect(()=>{
-        fireDb.child("mesas").on("value",(snapshot)=>{
-            if(snapshot.val() !== null){
-              setData({...snapshot.val()});
-            }else{
-                setData({});
-            }
-        });
-        return ()=>{
-            setData({});
-        }
-    }, [])
-
-    useEffect(()=>{
-        fireDb.child("areas").on("value",(snapshot)=>{
-            if(snapshot.val() !== null){
-                setAreasData({...snapshot.val()});
-            }else{
-                setAreasData({});
-            }
-        });
-        return ()=>{
-            setAreasData({});
-        }
-    }, [])
-
-    const handleInputChange =(e)=>{
-        const {name,value} = e.target;
-        setState({...state,[name]:value})
-    };
-
-
-    const handleSubmit =(e)=>{
-        e.preventDefault();
-        if(!nombre ){
-            toast.error("Proporcione un valor en cada campo de entrada");
-        }else{
-            if(idArea=='0' || idArea==''){
-                toast.error("Seleccione una area");
-            }else{
-                fireDb.child('mesas').push(state,(error)=>{
-                    if(error){
-                        toast.error(error);
-                    }else{
-                        toast.success("MESA GUARDADA");
-                    }
-                })
-            }
-        }
-    };
-
-    
-    const onDelete=(id)=>{
-        if(window.confirm("Seguro de Eliminar Mesa?")){
-            fireDb.child(`mesas/${id}`).remove((err)=>{
-                if(err){
-                    toast.error(err);
-                }else{
-                    toast.error("MESA ELIMINADA")
-                }
-            });
-        }
-    }
+    const {dataAreas} = useAreas();
+    const {
+        dataMesas,
+        dataMesaSelect,        
+        inputChangeMesa,
+        submitMesa,
+        onDeleteMesa,
+        onSelectMesa,
+        limpiarMesaSelect} = useMesas();
+    const {idMesa,nombre,idArea} = dataMesaSelect;
 
     return (
         <div className="container">
@@ -90,7 +25,7 @@ const Mesas = () => {
                 </div>
                 <div className="col-4">
                     <form
-                        onSubmit={handleSubmit}
+                        onSubmit={submitMesa}
                     >  
                         <div className="form-row">
                             <div className="form-group col-12">
@@ -100,13 +35,13 @@ const Mesas = () => {
                                     id="idArea" 
                                     name="idArea"
                                     value={idArea || ""}
-                                    onChange={handleInputChange}
+                                    onChange={inputChangeMesa}
                                     >
                                     <option key={0} value={'0'}>Seleccione una Opción</option>
 
-                                    {Object.keys(areasData).map((id,index)=>{
+                                    {Object.keys(dataAreas).map((id,index)=>{
                                         return (
-                                           <option  key={id} value={`${id}`} >{areasData[id].nombre}</option>
+                                           <option  key={id} value={`${id}`} >{dataAreas[id].nombre}</option>
                                         )
                                     })}
                                  </select>
@@ -122,12 +57,25 @@ const Mesas = () => {
                                 name="nombre"
                                 autoComplete="off" 
                                 value={nombre || ""}
-                                onChange={handleInputChange}
+                                onChange={inputChangeMesa}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">Guardar</button>
+
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary">
+                                {idMesa?'Actualizar':'Guardar'}
+                        </button>
+
+                        <button 
+                            type="button" 
+                            className="btn btn-success"
+                            onClick={()=> limpiarMesaSelect()}>
+                                Limpiar
+                        </button>
                     </form>
                 </div>
+
                 <div className="col-8">
                 <div className="table-wrapper-scroll-y my-custom-scrollbar">
                     <table className="table table-striped table-hover">
@@ -140,30 +88,38 @@ const Mesas = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(data).map((id,index)=>{
+                            {Object.keys(dataMesas).map((id,index)=>{
                                 let idArea='';
-                                idArea=data[id].idArea;
+                                idArea=dataMesas[id].idArea;
                                 return (
                                     <tr key={id}>
                                         <th scope="row"> {index+1} </th>
-                                        <td> {data[id].nombre} </td>
+                                        <td> {dataMesas[id].nombre} </td>
                                         <td> 
-                                            {Object.keys(areasData).map((id,index)=>{
+                                            {Object.keys(dataAreas).map((id,index)=>{
                                                 if(id===idArea){
-                                                    return(<p key={id}>{areasData[id].nombre} </p>);
+                                                    return(<p key={id}>{dataAreas[id].nombre} </p>);
                                                 }else{
                                                     return(<p key={id}> </p>);
                                                 }
                                             })}
                                         </td>
+                                         
                                         <td className="tdAccion">
-                                            <Link to={'/mesa'}>
-                                                <button type="button" className="btn btn-secondary">
+                                            {/*Modificar Mesa onSelectMesa*/}
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-secondary"
+                                                onClick={()=> onSelectMesa(id)}>
                                                     <span className="fas fa-edit"></span>
-                                                </button>
-                                            </Link>
+                                            </button>
                                             {/*Eliminar Mesa*/}
-                                            <button className="btn btn-danger" onClick={()=> onDelete(id)}><span className="fas fa-trash"></span></button>
+                                            <button
+                                                type="button"  
+                                                className="btn btn-danger" 
+                                                onClick={()=> onDeleteMesa(id)}>
+                                                    <span className="fas fa-trash"></span>
+                                            </button>
                                         </td>
                                     </tr>
                                 )

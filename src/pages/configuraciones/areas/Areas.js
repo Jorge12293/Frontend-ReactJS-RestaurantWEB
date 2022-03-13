@@ -59,7 +59,6 @@ const Areas = () => {
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">AREA</th>
-
                                 <th scope="col" className="tdAccion">ACCIÓN</th>
                             </tr>
                         </thead>
