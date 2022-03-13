@@ -1,99 +1,22 @@
-import React,{useState,useEffect} from "react";
-import {useNavigate,useParams,Link} from "react-router-dom";
+import React from "react";
 import './Categorias.css';
-import {toast} from "react-toastify";
-import fireDb from "../../../firebase";
+import { useCategorias } from "../../../hooks/useCategorias";
 
-const initialState ={
-    nombre:""
-}
 
 const Categorias = () => {
     
-    const {id} = useParams();
-    const navigate = useNavigate();
 
-    const [state,setState] = useState(initialState);
-    const [data,setData] = useState({});
-    const {nombre} = state;
-
-    useEffect(()=>{
-        fireDb.child("categorias").on("value",(snapshot)=>{
-            if(snapshot.val() !== null){
-              setData({...snapshot.val()});
-            }else{
-                setData({});
-            }
-        });
-        return ()=>{
-            setData({});
-        }
-    }, [id])
-
-    useEffect(()=>{
-        if(id){
-          setState({...data[id]});
-        }else{
-          setState({...initialState})
-        }
-        return()=>{
-            setState({...initialState})
-        }  
-      },[id,data]);
-
-    const handleInputChange =(e)=>{
-        const {name,value} = e.target;
-        setState({...state,[name]:value})
-    };
-
-    const onDelete=(id)=>{
-        if(window.confirm("Seguro de Eliminar Categoria?")){
-            fireDb.child(`categorias/${id}`).remove((err)=>{
-                if(err){
-                    toast.error(err);
-                }else{
-                    toast.error("CATEGORIA ELIMINADA")
-                }
-            });
-        }
-    }
-
-
-    const handleSubmit =(e)=>{
-        e.preventDefault();
-        if(!nombre ){
-            toast.error("Proporcione un valor en cada campo de entrada");
-        }else{
-            if(!id){
-                //CREAR CATEGORIA
-                fireDb.child('categorias').push(state,(error)=>{
-                    if(error){
-                        toast.error(error);
-                    }else{
-                        limpiarCamposArea();
-                        toast.success("CATEGORIA GUARDADA");
-                    }
-                })
-            }else{
-                //ACTUALIZAR CATEGORIA
-                fireDb.child(`categorias/${id}`).set(state,(error)=>{
-                    if(error){
-                        toast.error(error);
-                    }else{
-                        limpiarCamposArea();
-                        toast.success("CATEGORIA ACTUALIZADA");
-                        setTimeout(()=>navigate('/categoria'),500);
-                    }
-                })   
-            }
-
-        }
-    };
-    
-    const limpiarCamposArea =()=>{
-        setState({...state,nombre:''});
-    };
-
+    const {
+        dataCategorias,
+        dataCategoriaSelect,
+        submitCategoria,
+        inputChangeCategoria,
+        onSelectCategoria,
+        onDeleteCategoria,
+        limpiarCategoriaSelect  
+        } = useCategorias();
+        
+    const {idCategoria,nombre} = dataCategoriaSelect;
 
     return (
         <div className="container">
@@ -103,7 +26,7 @@ const Categorias = () => {
                 </div>
                 <div className="col-4">
                     <form
-                        onSubmit={handleSubmit}
+                        onSubmit={submitCategoria}
                     >
                         <div className="mb-3">
                             <label htmlFor="nombre" className="form-label">Categoria</label>
@@ -114,10 +37,20 @@ const Categorias = () => {
                                 name="nombre"
                                 autoComplete="off" 
                                 value={nombre || ""}
-                                onChange={handleInputChange} 
+                                onChange={inputChangeCategoria} 
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">{id?'Actualizar':'Guardar'}</button>
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary">
+                                {idCategoria?'Actualizar':'Guardar'}
+                        </button>
+                        <button 
+                            type="button" 
+                            className="btn btn-success"
+                            onClick={()=> limpiarCategoriaSelect()}>
+                                Limpiar
+                        </button>
                     </form>
                 </div>
                 <div className="col-8">
@@ -132,19 +65,25 @@ const Categorias = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(data).map((id,index)=>{
+                            {Object.keys(dataCategorias).map((id,index)=>{
                                 return (
                                     <tr key={id}>
                                         <th scope="row"> {index+1} </th>
-                                        <td> {data[id].nombre} </td>
+                                        <td> {dataCategorias[id].nombre} </td>
                                         <td className="tdAccion">
-                                            <Link to={`/categoria/${id}`}>
-                                                <button type="button" className="btn btn-secondary">
+                                            {/*Modificar Categoria*/}
+                                            <button 
+                                                className="btn btn-secondary" 
+                                                onClick={()=> onSelectCategoria(id)}>
                                                     <span className="fas fa-edit"></span>
-                                                </button>
-                                            </Link>
+                                            </button>
+
                                             {/*Eliminar Categoria*/}
-                                            <button className="btn btn-danger" onClick={()=> onDelete(id)}><span className="fas fa-trash"></span></button>
+                                            <button 
+                                                className="btn btn-danger" 
+                                                onClick={()=> onDeleteCategoria(id)}>
+                                                    <span className="fas fa-trash"></span>
+                                            </button>
                                         </td>
                                     </tr>
                                 )
