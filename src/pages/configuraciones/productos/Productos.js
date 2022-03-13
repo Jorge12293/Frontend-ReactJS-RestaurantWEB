@@ -135,7 +135,16 @@ const Productos = () => {
                                 onChange={handleInputChange} 
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">Guardar</button>
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary">
+                                Guardar
+                        </button>
+                        <button 
+                            type="button" 
+                            className="btn btn-success">
+                                Limpiar
+                        </button>
                     </form>
                 </div>
                 <div className="col-8">
