@@ -1,84 +1,22 @@
-import React,{useState,useEffect} from "react";
-import {useNavigate,useParams,Link} from "react-router-dom";
+import React from "react";
 import './Productos.css';
-import {toast} from "react-toastify";
-import fireDb from "../../../firebase";
+import { useCategorias } from "../../../hooks/useCategorias";
+import { useProductos } from "../../../hooks/useProductos";
 
-const initialState ={
-    idCategoria:"",
-    nombre:"",
-    precio:0.0,
-    estado:"disponible"
-}
 
 const Productos = () => {
     
-    const [state,setState] = useState(initialState);
-    const [data,setData] = useState({});
-    
-    const [categoriasData,setCategoriasData] = useState({});
-    const {idCategoria,nombre,precio,estado} = state;
+    const {         
+        dataProductos,
+        dataProductoSelect,
+        inputChangeProducto,
+        submitProducto,
+        onDeleteProducto,
+        onSelectProducto,
+        limpiarProductoSelect} = useProductos();
+    const {idProducto,idCategoria,nombre,precio} = dataProductoSelect;
 
-    useEffect(()=>{
-        fireDb.child("productos").on("value",(snapshot)=>{
-            if(snapshot.val() !== null){
-              setData({...snapshot.val()});
-            }else{
-                setData({});
-            }
-        });
-        return ()=>{
-            setData({});
-        }
-    }, [])
-
-    useEffect(()=>{
-        fireDb.child("categorias").on("value",(snapshot)=>{
-            if(snapshot.val() !== null){
-                setCategoriasData({...snapshot.val()});
-            }else{
-                setCategoriasData({});
-            }
-        });
-        return ()=>{
-            setCategoriasData({});
-        }
-    }, [])
-
-    const handleInputChange =(e)=>{
-        const {name,value} = e.target;
-        setState({...state,[name]:value})
-    };
-
-
-    const handleSubmit =(e)=>{
-        e.preventDefault();
-        if(!nombre ){
-            toast.error("Proporcione un valor en cada campo de entrada");
-        }else{
-            fireDb.child('productos').push(state,(error)=>{
-                if(error){
-                    toast.error(error);
-                }else{
-                    toast.success("PRODUCTO GUARDADO");
-                }
-            })
-        }
-    };
-
-    
-    const onDelete=(id)=>{
-        if(window.confirm("Seguro de Eliminar Producto?")){
-            fireDb.child(`productos/${id}`).remove((err)=>{
-                if(err){
-                    toast.error(err);
-                }else{
-                    toast.error("PRODUCTO ELIMINADO")
-                }
-            });
-        }
-    }
-
+    const { dataCategorias } = useCategorias();
 
     return (
         <div className="container">
@@ -88,7 +26,7 @@ const Productos = () => {
                 </div>
                 <div className="col-4">
                     <form
-                        onSubmit={handleSubmit}
+                        onSubmit={submitProducto}
                     >  
                         <div className="form-row">
                             <div className="form-group col-12">
@@ -98,12 +36,12 @@ const Productos = () => {
                                     id="idCategoria" 
                                     name="idCategoria"
                                     value={idCategoria || ""}
-                                    onChange={handleInputChange}
+                                    onChange={inputChangeProducto}
                                     >
                                     <option key={0}>Seleccione una Opción</option>  
-                                    {Object.keys(categoriasData).map((id,index)=>{
+                                    {Object.keys(dataCategorias).map((id,index)=>{
                                         return (
-                                           <option  key={id} value={`${id}`} >{categoriasData[id].nombre}</option>
+                                           <option  key={id} value={`${id}`} >{dataCategorias[id].nombre}</option>
                                         )
                                     })}
                                  </select>
@@ -118,7 +56,7 @@ const Productos = () => {
                                 name="nombre"
                                 autoComplete="off"
                                 value={nombre || ""}
-                                onChange={handleInputChange} 
+                                onChange={inputChangeProducto} 
                             />
                         </div>
                         <div className="mb-3">
@@ -132,17 +70,18 @@ const Productos = () => {
                                 id="precio"
                                 name="precio"
                                 value={precio || ""}
-                                onChange={handleInputChange} 
+                                onChange={inputChangeProducto} 
                             />
                         </div>
                         <button 
                             type="submit" 
                             className="btn btn-primary">
-                                Guardar
+                               {idProducto?'Actualizar':'Guardar'}
                         </button>
                         <button 
                             type="button" 
-                            className="btn btn-success">
+                            className="btn btn-success"
+                            onClick={()=> limpiarProductoSelect()}>
                                 Limpiar
                         </button>
                     </form>
@@ -160,31 +99,37 @@ const Productos = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(data).map((id,index)=>{
+                            {Object.keys(dataProductos).map((id,index)=>{
                                 let idCategoria='';
-                                idCategoria=data[id].idCategoria;
+                                idCategoria=dataProductos[id].idCategoria;
                                 return (
                                     <tr key={id}>
                                         <th scope="row"> {index+1} </th>
-                                        <td> {data[id].nombre} </td>
-                                        <td> {data[id].precio} </td>
+                                        <td> {dataProductos[id].nombre} </td>
+                                        <td> {dataProductos[id].precio} </td>
                                         <td> 
-                                            {Object.keys(categoriasData).map((id,index)=>{
+                                            {Object.keys(dataCategorias).map((id,index)=>{
                                                 if(id===idCategoria){
-                                                    return(<p key={id}>{categoriasData[id].nombre} </p>);
+                                                    return(<p key={id}>{dataCategorias[id].nombre} </p>);
                                                 }else{
                                                     return(<p key={id}> </p>);
                                                 }
                                             })}
                                         </td>
                                         <td className="tdAccion">
-                                            <Link to={'/mesa'}>
-                                                <button type="button" className="btn btn-secondary">
+                                            {/*Modificar Producto*/}
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-secondary"
+                                                onClick={()=> onSelectProducto(id)}>
                                                     <span className="fas fa-edit"></span>
-                                                </button>
-                                            </Link>
+                                            </button>
                                             {/*Eliminar Producto*/}
-                                            <button className="btn btn-danger" onClick={()=> onDelete(id)}><span className="fas fa-trash"></span></button>
+                                            <button 
+                                                className="btn btn-danger" 
+                                                onClick={()=>  onDeleteProducto(id)}>
+                                                    <span className="fas fa-trash"></span>
+                                            </button>
                                         </td>
                                     </tr>
                                 )

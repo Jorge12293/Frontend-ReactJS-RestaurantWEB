@@ -106,7 +106,7 @@ const Mesas = () => {
                                         </td>
                                          
                                         <td className="tdAccion">
-                                            {/*Modificar Mesa onSelectMesa*/}
+                                            {/*Modificar Mesa*/}
                                             <button 
                                                 type="button" 
                                                 className="btn btn-secondary"
