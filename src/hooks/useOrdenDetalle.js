@@ -22,31 +22,6 @@ export const useOrdenDetalle = () =>{
         }
         
     }, [])
-/*
-    const buscarOrdenDetalle = (idDetalleOrden=>{
-        console.log(idDetalleOrden);
-           
-        console.log("TEST 1 ordenDetalleEncontrada");
-        console.log(dataOrdenDetalle);
-        if(idDetalleOrden!=''){
-            let listaOrdenDetalle = Object.keys(dataOrdenDetalle).map((id1,index)=>{
-                return dataOrdenDetalle[id1].map((id2,index)=>{
-                    return{
-                        ...id2,
-                        idDetalleOrden:id1
-                    }
-                })
-            })
-            console.log(listaOrdenDetalle);
-            const ordenDetalleEncontrada = listaOrdenDetalle.find((ordenDetalle,index)=>ordenDetalle[index]?.idDetalleOrden === idDetalleOrden);
-            console.log("TEST 2 ordenDetalleEncontrada");
-            console.log(ordenDetalleEncontrada );
-            return ordenDetalleEncontrada;
-        }else{
-            return [];
-        }
-    });
-*/
 
     const buscarOrdenDetalleR = (idDetalleOrden=>{
         if(idDetalleOrden!=''){
