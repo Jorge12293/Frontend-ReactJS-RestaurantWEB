@@ -16,18 +16,17 @@ import ModalClienteComponent from "./componentsFactura/ModalClienteComponent";
 import { usePersonas } from "../../hooks/usePersonas";
 
 
-
 const Factura = () => {
 
     const {id:idMesa} = useParams();
     const navigate = useNavigate(); 
 
-    const {dataPersonas,dataPersonaSelect,setPersonaSelect,onSelectPersona} = usePersonas();
+    const {dataPersonas,dataPersonaSelect,onSelectPersona} = usePersonas();
 
-    const {dataMesas,buscarMesa,abrirMesa,anularMesa} = useMesas();
+    const {dataMesas,buscarMesa,updateEstadoMesa} = useMesas();
     const {dataCategorias } = useCategorias();
     const {dataProductos,buscarPorCategoria,dataCategoriaBusq  } = useProductos();
-    const {grabarOrden,cargarOrdenR,updateEstadoOrden} = useOrden([]);
+    const {grabarOrden,cargarOrdenR,buscarOrdenId,updateEstadoOrden} = useOrden([]);
 
     const {
         dataTotalFact,
@@ -48,23 +47,6 @@ const Factura = () => {
             setOrdenDetalleFData([]);
         }
     }, [dataMesas])
-
-
-    useEffect(()=>{
-        console.log("USE EFECT FACTURA cargando persona"); 
-        setPersonaSelect({
-            idPersona:'-MxIAkNNDtt2H0nJ9NSb',
-            nombre:'Consumidor',
-            apellido:'Final',
-            telefono:'456987',
-            correo:'empresa@gmail.com'
-        });
-        return ()=>{
-            console.log("USE EFECT FACTURA limpiando persona"); 
-            //setOrdenDetalleFData([]);
-        }
-    }, [])
-
 
     useEffect(()=>{
         console.log("USE EFECT Total Factura Ejecutando");
@@ -93,6 +75,7 @@ const Factura = () => {
                 if(lista==undefined){
                     return [];
                 }else{
+                    onSelectPersona(buscarOrdenId(mesaFound.idOrden).idCliente);
                     return lista;
                 }
             }else{
@@ -104,18 +87,26 @@ const Factura = () => {
     });
 
 
+    // Guardar Orden de la Mesa
     const guardarOrden = (idMesa)=>{
+        let idPersona='';
+        if(dataPersonaSelect.idPersona==undefined ||  dataPersonaSelect.idPersona==''){
+            idPersona='-MxIAkNNDtt2H0nJ9NSb';
+        }else{
+            idPersona=dataPersonaSelect.idPersona;
+        }
         const mesaFound= buscarMesa(idMesa);
-        const idOrden = grabarOrden(mesaFound,dataTotalFact,dataOrdenDetalleF,dataPersonaSelect.idPersona);
-        abrirMesa(idMesa,idOrden);
+        const idOrden = grabarOrden(mesaFound,dataTotalFact,dataOrdenDetalleF,idPersona);
+        updateEstadoMesa(idMesa,idOrden,"ocupada");
         toast.success("Orden Guardada");
         setTimeout(()=>navigate('/pos'),500);
     };
 
+    // Guardar Factura
     const facturarOrden = (idMesa)=>{
         const mesaFound= buscarMesa(idMesa);
         updateEstadoOrden(mesaFound.idOrden,'FACTURADA');
-        anularMesa(mesaFound);
+        updateEstadoMesa(idMesa,"","libre");
         toast.success("Orden Facturada");
         setTimeout(()=>navigate('/pos'),500);   
     };

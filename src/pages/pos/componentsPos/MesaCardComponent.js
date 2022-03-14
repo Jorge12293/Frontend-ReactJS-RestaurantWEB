@@ -22,7 +22,7 @@ const MesaCardComponent= ({
                 ?<img src={'assets/mesa_libre.png'} className="card-img-top" style={{background:'white'}} alt="..."/>
                 :<img src={'assets/mesa_ocupada.png'} className="card-img-top" style={{background:'#40ca88'}} alt="..."/> }
     
-    
+                <p>{buscarArea(dataMesas[id]?.idArea)?.nombre}</p>
                 <p>Mesa: {dataMesas[id].nombre}</p>
             </div>
         </>
