@@ -18,6 +18,7 @@ import Personas from './pages/configuraciones/personas/Personas';
 import Navbar from './components/Navbar';
 
 import './App.css';
+import Login from './pages/login/login';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
         <ToastContainer position='top-center' />
         <Routes>
           <Route exact path='/' element={<Inicio/>} />
-          
+
           <Route exact path='/pos' element={<Pos/>} />
 
           <Route exact path='/factura/:id' element={<Factura/>} />
