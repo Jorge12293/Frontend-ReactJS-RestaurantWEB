@@ -7,7 +7,8 @@ const initialStateProducto ={
     idCategoria:"",
     nombre:"",
     precio:0.0,
-    estado:"disponible"
+    estado:"disponible",
+    cantidad:0
 }
 
 export const useProductos = () =>{
@@ -61,7 +62,8 @@ export const useProductos = () =>{
                     idCategoria:dataProductoSelect.idCategoria,
                     nombre:dataProductoSelect.nombre,
                     precio:dataProductoSelect.precio,
-                    estado:dataProductoSelect.estado
+                    estado:dataProductoSelect.estado,
+                    cantidad:dataProductoSelect.cantidad
                 },(error)=>{
                     if(error){
                         toast.error(error);
@@ -74,7 +76,33 @@ export const useProductos = () =>{
         }
     };
 
+
+        
+    const onUpdateCantidadProducto=(id,newCant,opcion)=>{
+        let nuevaCantidad = 0;
+        const productoEncontrado=buscarProducto(id);
+
+        if(opcion=='cambiar'){
+            nuevaCantidad=newCant;
+        }
+
+        //ACTUALIZAR PRODUCTO
+        fireDb.child(`productos/${productoEncontrado.idProducto}`).set({
+            idCategoria:productoEncontrado.idCategoria,
+            nombre:productoEncontrado.nombre,
+            precio:productoEncontrado.precio,
+            estado:productoEncontrado.estado,
+            cantidad:nuevaCantidad
+        },(error)=>{
+             if(error){
+                toast.error(error);
+             }else{
+                toast.success("PRODUCTO ACTUALIZADO");
+             }
+         })  
+    }
     
+
     const onDeleteProducto=(id)=>{
         if(window.confirm("Seguro de Eliminar Producto?")){
             fireDb.child(`productos/${id}`).remove((err)=>{
@@ -98,7 +126,8 @@ export const useProductos = () =>{
             idCategoria:"",
             nombre:"",
             precio:0.0,
-            estado:"disponible"
+            estado:"disponible",
+            cantidad:0
         });
     }
 
@@ -116,6 +145,7 @@ export const useProductos = () =>{
                 idCategoria:dataProductos[id].idCategoria,
                 nombre:dataProductos[id].nombre,
                 precio:dataProductos[id].precio,
+                cantidad:dataProductos[id].cantidad
             };    
         })
         const producto = listaProductos.find((producto)=> producto.idProducto === idProducto );
@@ -136,6 +166,7 @@ export const useProductos = () =>{
         submitProducto,
         onDeleteProducto,
         onSelectProducto,
+        onUpdateCantidadProducto,
         limpiarProductoSelect  
     }
 

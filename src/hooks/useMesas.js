@@ -98,32 +98,16 @@ export const useMesas =() =>{
         });
     }
 
-
     const filtrarMesasPorArea = (idArea)=>{
         setMesaBusqData(idArea);
     }
     
-    const anularMesa=(mesa)=>{
-        fireDb.child(`mesas/${mesa.idMesa}`).set({
-            nombre:mesa.nombre,
-            idArea:mesa.idArea,
-            estado:'libre',
-            idOrden:''
-        },(error)=>{
-            if(error){
-                toast.error(error);
-            }else{
-                toast.error("Mesa Anulada");
-            }
-        })
-    }
-
-    const abrirMesa=(idMesaBusq,idOrden)=>{
+    const updateEstadoMesa=(idMesaBusq,idOrden,estadoMesa)=>{
         const mesaFound = buscarMesa(idMesaBusq);
         fireDb.child(`mesas/${mesaFound.idMesa}`).set({
             nombre:mesaFound.nombre,
             idArea:mesaFound.idArea,
-            estado:'ocupada',
+            estado:estadoMesa,
             idOrden:idOrden
         },(error)=>{
             if(error){
@@ -131,6 +115,7 @@ export const useMesas =() =>{
             }
         }) 
     }
+
 
     const buscarMesa = (idMesaBusq)=>{
         let listaMesa = Object.keys(dataMesas).map((id,index)=>{
@@ -159,8 +144,7 @@ export const useMesas =() =>{
         onSelectMesa,
         limpiarMesaSelect,
         filtrarMesasPorArea,
-        anularMesa,
-        abrirMesa,
+        updateEstadoMesa,
         buscarMesa 
     }
 

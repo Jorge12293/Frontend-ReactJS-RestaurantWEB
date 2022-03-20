@@ -58,6 +58,12 @@ const Navbar = () => {
                             className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
                             to="/producto">PRODUCTOS
                         </NavLink>
+                        {/*
+                        <NavLink
+                            className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
+                            to="/tomafisica">TOMA FISICA
+                        </NavLink>
+                        */}
                     </div>
                 </li>
                 <li className="nav-item dropdown">
@@ -68,6 +74,25 @@ const Navbar = () => {
                         <NavLink
                             className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
                             to="/persona">CLIENTES
+                        </NavLink>
+                    </div>
+                </li>
+                <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                      REPORTES
+                    </a>
+                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <NavLink
+                            className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
+                            to="/barra">Barra
+                        </NavLink>
+                        <NavLink
+                            className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
+                            to="/anillo">ANILLO
+                        </NavLink>
+                        <NavLink
+                            className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
+                            to="/linea">LINEA
                         </NavLink>
                     </div>
                 </li>

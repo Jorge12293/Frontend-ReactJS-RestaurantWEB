@@ -49,12 +49,22 @@ export const useOrden = () =>{
     }, [])
 
     const grabarOrden = (mesaFound,dataTotalFact,dataOrdenDetalleF,idPersona) =>{
-        const idDetalleOrden = grabarDetalleFact(dataOrdenDetalleF);        
-        const idOrden = grabarOrdenFact(mesaFound,dataTotalFact,idDetalleOrden,idPersona);
-        return idOrden;
+        if(mesaFound.idOrden==''){
+            // Grabar Nueva Orden
+            const idDetalleOrden = grabarDetalleFact(dataOrdenDetalleF);        
+            const idOrden = grabarOrdenFact(mesaFound,dataTotalFact,idDetalleOrden,idPersona);        
+            return idOrden;
+        }else{
+            // Actualizar Orden
+            const ordenEncontrada = buscarOrdenId(mesaFound.idOrden);
+            updateDetalleFact(dataOrdenDetalleF,ordenEncontrada.idDetalleOrden);        
+            updateOrdenFact(mesaFound,dataTotalFact,ordenEncontrada.idDetalleOrden,idPersona,mesaFound.idOrden);        
+            return mesaFound.idOrden;
+        }
     }
 
     const grabarOrdenFact = (mesaFound,dataTotalFact,idDetalleOrden,idPersona) =>{
+
         const newOrden={
             fecha:fecha,
             hora:hora,
@@ -65,6 +75,7 @@ export const useOrden = () =>{
             idDetalleOrden:idDetalleOrden,
             estado:"PROCESO"
         } 
+
         const idOrden=fireDb.child('ordenes').push( newOrden,(error)=>{
             if(error){
                 toast.error(error);
@@ -74,17 +85,54 @@ export const useOrden = () =>{
         return idOrden;
     }
 
-    const grabarDetalleFact = (dataOrden) =>{
-        const idDetalleOrden = fireDb.child('ordenesDetalle').push(dataOrden,(error)=>{
+    const updateOrdenFact = (mesaFound,dataTotalFact,idDetalleOrden,idPersona,idOrden) =>{
+        const newOrden={
+            fecha:fecha,
+            hora:hora,
+            idArea:mesaFound.idArea,
+            nombreMesa:mesaFound.nombre,
+            total:dataTotalFact,
+            idCliente:idPersona,
+            idDetalleOrden:idDetalleOrden,
+            estado:"PROCESO"
+        } 
+        fireDb.child(`ordenes/${idOrden}`).set( newOrden,(error)=>{
+            if(error){
+                toast.error(error);
+            }
+        }); 
+    }
+
+    const grabarDetalleFact = (dataOrdenDetalleF) =>{
+        const idDetalleOrden = fireDb.child('ordenesDetalle').push(dataOrdenDetalleF,(error)=>{
+            if(error){
+                toast.error(error);
+            }
+        }).getKey();
+        //grabarDetalleFactHist(dataOrdenDetalleF);
+        return idDetalleOrden;
+    }
+/*
+    const grabarDetalleFactHist = (dataOrdenDetalleF) =>{
+        const idDetalleOrden = fireDb.child('ordenesDetalleHistorial').push({
+            ...dataOrdenDetalleF,
+            idOrden:0
+        },(error)=>{
             if(error){
                 toast.error(error);
             }
         }).getKey();
         return idDetalleOrden;
     }
+    */
 
-
-
+    const updateDetalleFact = (dataOrdenDetalleF,idDetalleOrden) =>{
+        fireDb.child(`ordenesDetalle/${idDetalleOrden}`).set(dataOrdenDetalleF,(error)=>{
+            if(error){
+                toast.error(error);
+            }
+        });
+    }
 
     const buscarPorEstadoOrden = (estado)=>{
         setOrdenEstadoBusqData(estado);
@@ -93,7 +141,6 @@ export const useOrden = () =>{
     // REVISADA
     const updateEstadoOrden = (idOrden,newEstado)=>{
         const ordenEncontrada=buscarOrdenId(idOrden);
-
         fireDb.child(`ordenes/${idOrden}`).set({
             fecha:ordenEncontrada.fecha,
             hora:ordenEncontrada.hora,
@@ -106,8 +153,6 @@ export const useOrden = () =>{
         },(error)=>{
             if(error){
                 toast.error(error);
-            }else{
-                console.log(error);
             }
         })
     }

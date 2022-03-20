@@ -9,9 +9,9 @@ import { usePersonas } from "../../../hooks/usePersonas";
 const Ordenes = () => {
 
     const {nombrePersona} = usePersonas();
-    const { dataOrdenes,dataOrdenEstadoBusq,dataOrdenEcontrada,dataOrdenDetalleEnc,buscarPorEstadoOrden,buscarOrdenR } = useOrden();
+    const { dataOrdenes,dataOrdenEstadoBusq,dataOrdenEcontrada,dataOrdenDetalleEnc,buscarPorEstadoOrden,buscarOrdenR,updateEstadoOrden} = useOrden();
     const {buscarArea} = useAreas();
-
+    
     if(dataOrdenDetalleEnc==undefined){
         return(
             <>
@@ -104,7 +104,23 @@ const Ordenes = () => {
                             
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button 
+                            type="button" 
+                            className={ dataOrdenEcontrada.estado == 'PROCESO' ? "btn btn-warning":"d-none"} 
+                            data-dismiss="modal"
+                            onClick={()=> updateEstadoOrden(dataOrdenEcontrada?.idOrden,'LISTA')}>    
+                                LISTA
+                        </button>
+
+                        <button 
+                            type="button" 
+                            className={ dataOrdenEcontrada.estado == 'LISTA' ? "btn btn-info":"d-none"} 
+                            data-dismiss="modal"
+                            onClick={()=> updateEstadoOrden(dataOrdenEcontrada?.idOrden,'SERVIDA')}>    
+                                SERVIDA
+                        </button>
+                        
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         </div>
                         </div>
                     </div>

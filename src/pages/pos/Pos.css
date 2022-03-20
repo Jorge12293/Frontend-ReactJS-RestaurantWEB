@@ -3,6 +3,11 @@ p {
 	font-weight: bold;
 }
 
+hr {
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+}
+
 .areas {
     width: 100%;
 	height: 10vh;

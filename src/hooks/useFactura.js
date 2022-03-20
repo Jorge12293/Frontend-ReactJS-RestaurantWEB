@@ -18,6 +18,7 @@ export const useFactura = () =>{
     const { buscarProducto } = useProductos();
 
     const [dataOrdenDetalleF,setOrdenDetalleFData] = useState([]);
+    //const [dataOrdenDetalleHist,setOrdenDetalleHist] = useState([]);
     const [dataTotalFact,setTotalFactData] = useState(0);
 
 

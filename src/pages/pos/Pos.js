@@ -1,24 +1,28 @@
-import React, { useMemo } from "react";
+import React from "react";
 import './Pos.css';
+import {toast} from "react-toastify";
 
-import MesaComponent from "./componentsPos/MesaComponent";
 import { useAreas } from "../../hooks/useAreas";
 import { useMesas } from "../../hooks/useMesas";
 import { useOrden } from "../../hooks/useOrden";
+import { usePersonas } from "../../hooks/usePersonas";
+
+import MesaComponent from "./componentsPos/MesaComponent";
 import AreaComponent from "./componentsPos/AreaComponent";
 import Loader from "../../components/Loader";
-import { usePersonas } from "../../hooks/usePersonas";
+
 const Pos = () => {
 
     const {dataAreas,buscarArea} = useAreas();
-    const {dataMesas,dataMesaBusq,filtrarMesasPorArea,anularMesa} = useMesas();
+    const {dataMesas,dataMesaBusq,filtrarMesasPorArea,updateEstadoMesa} = useMesas();
     const {dataOrdenEcontrada,dataOrdenDetalleEnc,buscarOrdenR,updateEstadoOrden} = useOrden();
     const {nombrePersona} = usePersonas();
 
     const anularMesaOrden = (mesaSel)=>{
-        anularMesa(mesaSel);
+        updateEstadoMesa(mesaSel.idMesa,'','libre');
         console.log(mesaSel);
         updateEstadoOrden(mesaSel.idOrden,'ANULADA');
+        toast.error("Mesa Anulada");
     };
 
     if(dataMesas.length==0){

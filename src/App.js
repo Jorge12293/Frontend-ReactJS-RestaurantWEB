@@ -3,7 +3,9 @@ import React from 'react';
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
+import Navbar from './components/Navbar';
 
 import Pos from './pages/pos/Pos';
 import Inicio from './pages/inicio/Inicio';
@@ -14,11 +16,13 @@ import Categorias from './pages/configuraciones/categorias/Categorias';
 import Productos from './pages/configuraciones/productos/Productos';
 import Ordenes from './pages/configuraciones/ordenes/Ordenes';
 import Personas from './pages/configuraciones/personas/Personas';
+import TomaFisica from './pages/configuraciones/tomaFisica/TomaFisica';
+import Anillo from './pages/reportes/prueba/Anillo';
+import Barra from './pages/reportes/prueba/Barra';
+import Linea from './pages/reportes/prueba/Linea';
 
-import Navbar from './components/Navbar';
 
-import './App.css';
-import Login from './pages/login/login';
+
 
 function App() {
   return (
@@ -34,6 +38,11 @@ function App() {
 
           <Route exact path='/factura/:id' element={<Factura/>} />
           
+          {/*Reportes */}
+          <Route exact path='/anillo' element={<Anillo/>} />
+          <Route exact path='/barra' element={<Barra/>} />
+          <Route exact path='/linea' element={<Linea/>} />
+          
           {/*Configuraciones */}
           <Route exact path='/orden' element={<Ordenes/>} />
           
@@ -48,6 +57,8 @@ function App() {
           <Route exact path='/producto' element={<Productos/>} />
 
           <Route exact path='/persona' element={<Personas/>} />
+
+          <Route exact path='/tomafisica' element={<TomaFisica/>} />
 
         </Routes>
       </div>
