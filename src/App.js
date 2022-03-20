@@ -17,12 +17,10 @@ import Productos from './pages/configuraciones/productos/Productos';
 import Ordenes from './pages/configuraciones/ordenes/Ordenes';
 import Personas from './pages/configuraciones/personas/Personas';
 import TomaFisica from './pages/configuraciones/tomaFisica/TomaFisica';
+
 import Anillo from './pages/reportes/prueba/Anillo';
 import Barra from './pages/reportes/prueba/Barra';
 import Linea from './pages/reportes/prueba/Linea';
-
-
-
 
 function App() {
   return (

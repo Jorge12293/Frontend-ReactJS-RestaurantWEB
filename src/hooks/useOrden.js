@@ -126,6 +126,19 @@ export const useOrden = () =>{
     }
     */
 
+
+    const grabarDetalleFactHist = (dataOrdenDetalleF) =>{
+        const idDetalleOrden = fireDb.child('ordenesDetalleHistorial').push({
+            ...dataOrdenDetalleF,
+            idOrden:0
+        },(error)=>{
+            if(error){
+                toast.error(error);
+            }
+        }).getKey();
+        return idDetalleOrden;
+    }
+
     const updateDetalleFact = (dataOrdenDetalleF,idDetalleOrden) =>{
         fireDb.child(`ordenesDetalle/${idDetalleOrden}`).set(dataOrdenDetalleF,(error)=>{
             if(error){
