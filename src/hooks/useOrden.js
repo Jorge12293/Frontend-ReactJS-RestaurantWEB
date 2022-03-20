@@ -64,6 +64,7 @@ export const useOrden = () =>{
     }
 
     const grabarOrdenFact = (mesaFound,dataTotalFact,idDetalleOrden,idPersona) =>{
+
         const newOrden={
             fecha:fecha,
             hora:hora,
@@ -74,6 +75,7 @@ export const useOrden = () =>{
             idDetalleOrden:idDetalleOrden,
             estado:"PROCESO"
         } 
+
         const idOrden=fireDb.child('ordenes').push( newOrden,(error)=>{
             if(error){
                 toast.error(error);
@@ -103,6 +105,19 @@ export const useOrden = () =>{
 
     const grabarDetalleFact = (dataOrdenDetalleF) =>{
         const idDetalleOrden = fireDb.child('ordenesDetalle').push(dataOrdenDetalleF,(error)=>{
+            if(error){
+                toast.error(error);
+            }
+        }).getKey();
+        //grabarDetalleFactHist(dataOrdenDetalleF);
+        return idDetalleOrden;
+    }
+
+    const grabarDetalleFactHist = (dataOrdenDetalleF) =>{
+        const idDetalleOrden = fireDb.child('ordenesDetalleHistorial').push({
+            ...dataOrdenDetalleF,
+            idOrden:0
+        },(error)=>{
             if(error){
                 toast.error(error);
             }
