@@ -58,6 +58,12 @@ const Navbar = () => {
                             className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
                             to="/producto">PRODUCTOS
                         </NavLink>
+                        {/*
+                        <NavLink
+                            className={({ isActive }) => isActive? "dropdown-item active": 'dropdown-item'}
+                            to="/tomafisica">TOMA FISICA
+                        </NavLink>
+                        */}
                     </div>
                 </li>
                 <li className="nav-item dropdown">

@@ -1,20 +1,18 @@
-import React,{useEffect} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 
 
     const FacturaComponent = ({  
         idMesa,
         dataTotalFact,
-        facturarOrden,
         dataOrdenDetalleF,
         dataPersonaSelect,
+        facturarOrden,
         guardarOrden,
         handleRemoveProductoF,
         handleIncrementItemF,
         handleDecrementItemF,
     }) => {
-
-
 
     return (
         <>
@@ -30,12 +28,12 @@ import {Link} from "react-router-dom";
                         </span>
                     </div>
                     <div className="col-5 text-left">
-                        <p>Nombre: {dataPersonaSelect.nombre}</p>
-                        <p>Apellido: {dataPersonaSelect.apellido}</p>
+                        <p>Nombre:   {dataPersonaSelect.nombre ? dataPersonaSelect.nombre:"Consumidor"}</p>
+                        <p>Apellido: {dataPersonaSelect.apellido ? dataPersonaSelect.apellido:"Final"}</p>
                     </div>
                     <div className="col-5 text-left">
-                        <p>Telefono: {dataPersonaSelect.telefono}</p>
-                        <p>Correo: {dataPersonaSelect.correo}</p>
+                        <p>Telefono: {dataPersonaSelect.telefono ? dataPersonaSelect.telefono:"999999"}</p>
+                        <p>Correo: {dataPersonaSelect.correo ? dataPersonaSelect.correo:"client@gmail.com"}</p>
                     </div>
                 </div>
 
@@ -100,11 +98,12 @@ import {Link} from "react-router-dom";
                         <div className="categorias p-1">
                             <button 
                                 type="button"
-                                className="btn btn-primary"
-                                onClick={()=> guardarOrden(idMesa)}
-                            >
-                                Guardar Orden
-                            </button>
+                                className={ dataTotalFact >0 ? "btn btn-primary":"d-none"}
+                                onClick={()=> guardarOrden(idMesa)}>
+                                    Guardar Orden
+                            </button>   
+                        
+                    
             
                             <button 
                                 type="button"
